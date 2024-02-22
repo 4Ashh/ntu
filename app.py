@@ -2,10 +2,10 @@ from flask import Flask,request,render_template
 import replicate
 import os
 import time
-
+from openai import OpenAI
 app = Flask(__name__)
 os.environ["REPLICATE_API_TOKEN"]="r8_2idkAutIh1jCAVVRIbEDgqt9zNUdbhG2cS1AF"
-
+model =OpenAI(api_key="sess-rMRQ43evufJkdDsui8CZc6PMsEJG773duIxL5Pkb")
 r = ""
 first_time = 1
 
@@ -43,16 +43,18 @@ def text_gpt():
 @app.route("/text_result",methods=["GET","POST"])
 def text_result():
     q = request.form.get("q")
+r = model.chat.completions.create(
+model ="gpt-3.5-turbo",
+messages=[
+    {
+        "role":"user",
+        "content":q
+    }
+],
+)
+    time.sleep(5)
     
-    r = replicate.run(
-    "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
-    input={
-        "prompt": q,
-        }
-    )
-    time.sleep(10)
-    
-    return(render_template("image_result.html",r=r[0]))
+    return(render_template("text_result.html",r=r.choices[0].message.content))
 
 @app.route("/end",methods=["GET","POST"])
 def end():

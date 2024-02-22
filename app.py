@@ -51,7 +51,7 @@ messages=[
         "role":"user",
         "content":q
     }
-],
+]
 )
     time.sleep(5)
     
